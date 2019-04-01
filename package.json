@@ -1,12 +1,16 @@
 {
   "name": "vscode-remove-package",
   "displayName": "vscode-remove-package",
-  "description": "Yarn remove or npm uninstall, clicking from package.json",
+  "description": "Remove your npm-packages directly from code",
   "version": "0.0.1",
   "publisher": "orkhanjafarovr",
   "icon": "icon.jpg",
   "engines": {
     "vscode": "^1.32.0"
+  },
+  "repository": {
+    "type": "MIT",
+    "url": "https://github.com/gigantz/vscode-remove-package"
   },
   "categories": ["Other"],
   "activationEvents": ["onCommand:extension.removePackage"],

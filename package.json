@@ -1,8 +1,8 @@
 {
   "name": "vscode-remove-package",
-  "displayName": "vscode-remove-package",
+  "displayName": "Remove package from code",
   "description": "Remove your npm-packages directly from code",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "orkhanjafarovr",
   "icon": "icon.jpg",
   "engines": {

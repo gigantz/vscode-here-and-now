@@ -1,6 +1,6 @@
 # vscode-remove-package
 
-Just right click to remove your npm-package with `npm` or `yarn`
+Just right click to remove your npm-package with `npm` or `yarn` from your code
 
 ![feature](vscode-remove-package.gif)
 

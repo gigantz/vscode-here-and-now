@@ -1,0 +1,46 @@
+{
+  "name": "vscode-remove-package",
+  "displayName": "vscode-remove-package",
+  "description": "Yarn remove or npm uninstall, clicking from package.json",
+  "version": "0.0.1",
+  "publisher": "orkhanjafarovr",
+  "icon": "icon.jpg",
+  "engines": {
+    "vscode": "^1.32.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onCommand:extension.removePackage"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.removePackage",
+        "title": "Remove package"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.removePackage",
+          "group": "YourGroup@1"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.28",
+    "eslint": "^5.13.0",
+    "@types/node": "^10.12.21",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "command-exists": "^1.2.8",
+    "pkg-up": "^3.0.1",
+    "spawn-npm-install": "^1.2.0"
+  }
+}

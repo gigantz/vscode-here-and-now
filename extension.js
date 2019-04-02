@@ -58,19 +58,36 @@ function getPackageNameRequire() {
   return selectedPackage;
 }
 
-function removePackage(selectedPackage, packageSrc) {
+function managePackage(handle, selectedPackage, packageSrc) {
+  const isReact = selectedPackage === 'react';
+  if (isReact) {
+    selectedPackage = 'react react-dom';
+  }
+  const install = handle === 'install';
   pkgUp({ cwd: packageSrc })
     .then(folder => {
       const allPackages = getAllPackages(folder);
-      if (!allPackages.includes(selectedPackage)) {
-        vscode.window.showErrorMessage('The package is not your dependencies');
+      if (
+        install
+          ? allPackages.includes(isReact ? 'react' : selectedPackage)
+          : !allPackages.includes(isReact ? 'react' : selectedPackage)
+      ) {
+        if (install) {
+          vscode.window.showErrorMessage('The package is already installed');
+        } else {
+          vscode.window.showErrorMessage(
+            'The package is not your dependencies'
+          );
+        }
         return;
       }
 
       const currentFolder = path.dirname(folder);
 
       const statusStarting = customStatusBar(
-        `$(trashcan) ${selectedPackage} is removing...`,
+        `$(trashcan) ${selectedPackage} is ${install
+          ? 'installing'
+          : 'removing'}...`,
         'yellow'
       );
 
@@ -79,19 +96,29 @@ function removePackage(selectedPackage, packageSrc) {
           fs.access(currentFolder + '/yarn.lock', fs.F_OK, async err => {
             let child;
             if (!err) {
-              child = await exec(`yarn remove ${selectedPackage}`, {
-                cwd: currentFolder
-              });
+              child = await exec(
+                `yarn ${install ? 'add' : 'remove'} ${selectedPackage}`,
+                {
+                  cwd: currentFolder
+                }
+              );
             } else {
-              child = await exec(`npm uninstall ${selectedPackage}`, {
-                cwd: currentFolder
-              });
+              child = await exec(
+                `npm ${install
+                  ? 'install --save'
+                  : 'uninstall'} ${selectedPackage}`,
+                {
+                  cwd: currentFolder
+                }
+              );
             }
 
             child.stdout.on('close', data => {
               statusStarting.dispose();
               const statusDone = vscode.window.showInformationMessage(
-                `"${selectedPackage}" has been removed!`
+                `"${selectedPackage}" ${install
+                  ? 'has been installed!'
+                  : 'has been removed!'}`
               );
               setTimeout(() => {
                 statusDone.dispose();
@@ -101,11 +128,21 @@ function removePackage(selectedPackage, packageSrc) {
           });
         })
         .catch(async () => {
-          const child = await exec(`npm uninstall ${selectedPackage}`, {
-            cwd: currentFolder
-          });
+          const child = await exec(
+            `npm ${install
+              ? 'install --save'
+              : 'uninstall'} ${selectedPackage}`,
+            {
+              cwd: currentFolder
+            }
+          );
           child.stdout.on('close', data => {
-            customStatusBar(`${selectedPackage} has been removed!`, '#7fff59');
+            customStatusBar(
+              `${selectedPackage} ${install
+                ? 'has been installed!'
+                : 'has been removed!'}`,
+              '#7fff59'
+            );
             child.kill();
           });
           debugger;
@@ -117,19 +154,45 @@ function removePackage(selectedPackage, packageSrc) {
 }
 
 function activate(context) {
-  vscode.commands.registerCommand('extension.removePackage', () => {
+  vscode.commands.registerCommand('extension.installPackage', () => {
     if (
       /package\.json$/.test(vscode.window.activeTextEditor.document.fileName)
     ) {
       const { selectedPackage } = getPackageNameJson();
-      removePackage(
+      managePackage(
+        'install',
         selectedPackage,
         path.dirname(vscode.window.activeTextEditor.document.fileName)
       );
     } else {
       try {
         const selectedPackage = getPackageNameRequire();
-        removePackage(
+        managePackage(
+          'install',
+          selectedPackage,
+          path.dirname(vscode.window.activeTextEditor.document.fileName)
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+
+  vscode.commands.registerCommand('extension.removePackage', () => {
+    if (
+      /package\.json$/.test(vscode.window.activeTextEditor.document.fileName)
+    ) {
+      const { selectedPackage } = getPackageNameJson();
+      managePackage(
+        'remove',
+        selectedPackage,
+        path.dirname(vscode.window.activeTextEditor.document.fileName)
+      );
+    } else {
+      try {
+        const selectedPackage = getPackageNameRequire();
+        managePackage(
+          'remove',
           selectedPackage,
           path.dirname(vscode.window.activeTextEditor.document.fileName)
         );

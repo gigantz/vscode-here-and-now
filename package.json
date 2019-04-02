@@ -1,8 +1,8 @@
 {
-  "name": "vscode-remove-package",
-  "displayName": "Remove package from code",
-  "description": "Remove your npm-packages directly from code",
-  "version": "0.0.5",
+  "name": "vscode-here-and-now",
+  "displayName": "Here & Now: Install/remove packages from code",
+  "description": "Install/remove your npm-packages directly from code",
+  "version": "0.0.1",
   "publisher": "orkhanjafarovr",
   "icon": "icon.png",
   "engines": {
@@ -10,23 +10,49 @@
   },
   "repository": {
     "type": "MIT",
-    "url": "https://github.com/gigantz/vscode-remove-package"
+    "url": "https://github.com/gigantz/vscode-here-and-now"
   },
   "categories": ["Other"],
-  "activationEvents": ["onCommand:extension.removePackage"],
+  "activationEvents": [
+    "onCommand:extension.installPackage",
+    "onCommand:extension.removePackage"
+  ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "extension.installPackage",
+        "title": "Install package",
+        "key": "sh"
+      },
       {
         "command": "extension.removePackage",
         "title": "Remove package"
       }
     ],
+    "keybindings": [
+      {
+        "command": "extension.installPackage",
+        "key": "shift+alt+i",
+        "mac": "shift+alt+i",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "extension.removePackage",
+        "key": "shift+alt+u",
+        "mac": "shift+alt+u",
+        "when": "editorTextFocus"
+      }
+    ],
     "menus": {
       "editor/context": [
         {
-          "command": "extension.removePackage",
+          "command": "extension.installPackage",
           "group": "YourGroup@1"
+        },
+        {
+          "command": "extension.removePackage",
+          "group": "YourGroup@2"
         }
       ]
     }

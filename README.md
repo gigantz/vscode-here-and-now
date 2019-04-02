@@ -1,20 +1,15 @@
-# vscode-remove-package
+# vscode-here-and-now
+Easily install/remove npm package directly from your code or package.json file.
 
-#
-### Shortly:
-You hit the right click on the package name and it is firing `npm uninstall your-package` or `yarn remove your-package` (if yarn in project) commands.
+![feature](vscode-here-and-now.gif)
 
-Just right click to remove your npm-package from your code
-
-![feature](vscode-remove-package.gif)
-
-**Remove packages by clicking here**
+**by clicking here**
 ```javascript
 import foo from 'bar';
 const foo2 = require('baz');
 ```
-**Or remove packages in package.json**
-
-
-
-Author: https://github.com/gigantz
+**Or in package.json**
+#
+## Key-bindings:
+Install package: `shift + alt + i`\
+Remove package: `shift + alt + u`

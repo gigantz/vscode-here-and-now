@@ -2,7 +2,7 @@
   "name": "vscode-here-and-now",
   "displayName": "Here & Now: Install/remove packages from code",
   "description": "Install/remove your npm-packages directly from code",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "orkhanjafarovr",
   "icon": "icon.png",
   "engines": {

@@ -58,7 +58,7 @@ function getPackageNameRequire() {
   return selectedPackage;
 }
 
-function managePackage(handle, selectedPackage, packageSrc) {
+function managePackage(handle, selectedPackage, packageSrc, isDev) {
   const isReact = selectedPackage === 'react';
   if (isReact) {
     selectedPackage = 'react react-dom';
@@ -97,7 +97,9 @@ function managePackage(handle, selectedPackage, packageSrc) {
             let child;
             if (!err) {
               child = await exec(
-                `yarn ${install ? 'add' : 'remove'} ${selectedPackage}`,
+                `yarn ${install
+                  ? isDev ? 'add --dev' : 'add'
+                  : 'remove'} ${selectedPackage}`,
                 {
                   cwd: currentFolder
                 }
@@ -105,7 +107,7 @@ function managePackage(handle, selectedPackage, packageSrc) {
             } else {
               child = await exec(
                 `npm ${install
-                  ? 'install --save'
+                  ? isDev ? 'install --save-dev' : 'install --save'
                   : 'uninstall'} ${selectedPackage}`,
                 {
                   cwd: currentFolder
@@ -130,7 +132,7 @@ function managePackage(handle, selectedPackage, packageSrc) {
         .catch(async () => {
           const child = await exec(
             `npm ${install
-              ? 'install --save'
+              ? isDev ? 'install --save-dev' : 'install --save'
               : 'uninstall'} ${selectedPackage}`,
             {
               cwd: currentFolder
@@ -145,38 +147,40 @@ function managePackage(handle, selectedPackage, packageSrc) {
             );
             child.kill();
           });
-          debugger;
         });
     })
-    .catch(error => {
-      debugger;
-    });
+    .catch(console.log);
 }
 
-function activate(context) {
-  vscode.commands.registerCommand('extension.installPackage', () => {
-    if (
-      /package\.json$/.test(vscode.window.activeTextEditor.document.fileName)
-    ) {
-      const { selectedPackage } = getPackageNameJson();
+function installPackage(isDev = false) {
+  if (/package\.json$/.test(vscode.window.activeTextEditor.document.fileName)) {
+    const { selectedPackage } = getPackageNameJson();
+    managePackage(
+      'install',
+      selectedPackage,
+      path.dirname(vscode.window.activeTextEditor.document.fileName),
+      isDev
+    );
+  } else {
+    try {
+      const selectedPackage = getPackageNameRequire();
       managePackage(
         'install',
         selectedPackage,
-        path.dirname(vscode.window.activeTextEditor.document.fileName)
+        path.dirname(vscode.window.activeTextEditor.document.fileName),
+        isDev
       );
-    } else {
-      try {
-        const selectedPackage = getPackageNameRequire();
-        managePackage(
-          'install',
-          selectedPackage,
-          path.dirname(vscode.window.activeTextEditor.document.fileName)
-        );
-      } catch (error) {
-        console.log(error);
-      }
+    } catch (error) {
+      console.log(error);
     }
-  });
+  }
+}
+
+function activate(context) {
+  vscode.commands.registerCommand('extension.installPackage', installPackage);
+  vscode.commands.registerCommand('extension.installDevPackage', () =>
+    installPackage(true)
+  );
 
   vscode.commands.registerCommand('extension.removePackage', () => {
     if (

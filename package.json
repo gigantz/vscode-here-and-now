@@ -15,6 +15,7 @@
   "categories": ["Other"],
   "activationEvents": [
     "onCommand:extension.installPackage",
+    "onCommand:extension.installDevPackage",
     "onCommand:extension.removePackage"
   ],
   "main": "./extension.js",
@@ -22,8 +23,11 @@
     "commands": [
       {
         "command": "extension.installPackage",
-        "title": "Install package",
-        "key": "sh"
+        "title": "Install package"
+      },
+      {
+        "command": "extension.installDevPackage",
+        "title": "Install package (dev)"
       },
       {
         "command": "extension.removePackage",
@@ -35,6 +39,12 @@
         "command": "extension.installPackage",
         "key": "shift+alt+i",
         "mac": "shift+alt+i",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "extension.installDevPackage",
+        "key": "shift+alt+d",
+        "mac": "shift+alt+d",
         "when": "editorTextFocus"
       },
       {
@@ -51,8 +61,12 @@
           "group": "YourGroup@1"
         },
         {
-          "command": "extension.removePackage",
+          "command": "extension.installDevPackage",
           "group": "YourGroup@2"
+        },
+        {
+          "command": "extension.removePackage",
+          "group": "YourGroup@3"
         }
       ]
     }

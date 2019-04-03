@@ -12,4 +12,5 @@ const foo2 = require('baz');
 #
 ## Key-bindings:
 Install package: `shift + alt + i`\
+Install package (dev): `shift + alt + d`\
 Remove package: `shift + alt + u`
